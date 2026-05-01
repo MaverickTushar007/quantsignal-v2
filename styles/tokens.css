@@ -1,0 +1,44 @@
+:root {
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-sans:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Fira Code', monospace;
+
+  --bg-base:     #07080a;
+  --bg-surface:  #0a0b0e;
+  --bg-elevated: #0f1014;
+  --bg-overlay:  #14151a;
+
+  --brand:        #00ff88;
+  --brand-dim:    rgba(0,255,136,0.08);
+  --brand-border: rgba(0,255,136,0.22);
+
+  --accent-red:      #ff4d6d;
+  --accent-gold:     #ffd700;
+  --accent-gold-dim: rgba(255,215,0,0.08);
+
+  --text-primary:   #e2e8f0;
+  --text-secondary: rgba(226,232,240,0.55);
+  --text-tertiary:  rgba(226,232,240,0.3);
+  --text-disabled:  rgba(226,232,240,0.15);
+
+  --border-subtle:  rgba(255,255,255,0.05);
+  --border-default: rgba(255,255,255,0.08);
+  --border-strong:  rgba(255,255,255,0.13);
+
+  --signal-long:   #00ff88;
+  --signal-short:  #ff4d6d;
+  --conf-high:     #00ff88;
+  --conf-moderate: #f59e0b;
+  --conf-low:      #ff4d6d;
+
+  --space-1: 4px;  --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px; --space-5: 20px;  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius-sm: 4px; --radius-md: 8px;
+  --radius-lg: 12px; --radius-xl: 16px;
+
+  --sidebar-width:     220px;
+  --sidebar-collapsed: 56px;
+  --topbar-height:     44px;
+}
