@@ -23,6 +23,7 @@ export default function CalendarPage() {
   const [infoEvent, setInfoEvent]   = useState<any | null>(null);
   const [infoText, setInfoText]     = useState("");
   const [infoLoading, setInfoLoading] = useState(false);
+  const [infoProgress, setInfoProgress] = useState(0);
   const [reminderEvent, setReminderEvent] = useState<any | null>(null);
   const [email, setEmail]           = useState("");
   const [reminderStatus, setReminderStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
@@ -140,8 +141,26 @@ export default function CalendarPage() {
     setInfoEvent(event);
     setInfoText("");
     setInfoLoading(true);
+    setInfoProgress(0);
+    const progIv = setInterval(() => setInfoProgress(p => p < 85 ? p + Math.random() * 7 : p), 350);
     const assets = (event.affected_assets||[]).join(", ") || "major markets";
-    const prompt = `Trading analyst. Event: ${event.title} | Forecast: ${event.forecast??"N/A"} | Previous: ${event.previous??"N/A"} | Actual: ${event.actual??"Not released yet"}\n\n## 📌 What It Is\n1 line only.\n\n## 🎯 Playbook\n🟢 BEAT: reaction + trade for ${assets}\n🔴 MISS: reaction + trade\n⚪ IN-LINE: expected move\n\n## ⚠️ Key Risk\n1 line.`;
+    const prompt = [
+      "You are a professional trading analyst. Analyze this economic event for trading implications.",
+      "Event: " + event.title,
+      "Forecast: " + (event.forecast ?? "N/A"),
+      "Previous: " + (event.previous ?? "N/A"),
+      "Actual: " + (event.actual ?? "Not released yet"),
+      "Affected assets: " + assets,
+      "",
+      "Respond in this EXACT format:",
+      "VERDICT: [one sentence - bullish/bearish/neutral impact and why]",
+      "BEAT: [if actual beats forecast - specific reaction + trade for " + assets + "]",
+      "MISS: [if actual misses forecast - specific reaction + trade]",
+      "INLINE: [if in-line - expected muted move]",
+      "TIMEFRAME: [how long will this impact last]",
+      "CONFIDENCE: [LOW / MEDIUM / HIGH]",
+      "RISK: [one sentence - key risk to this playbook]",
+    ].join("\n");
     try {
       const res = await fetch(`${CAL_API}/chat`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({symbol:"GENERIC", message:prompt, history:[]}) });
       if (!res.body) throw new Error();
@@ -150,9 +169,12 @@ export default function CalendarPage() {
         const {value, done} = await reader.read(); if (done) break;
         buf += dec.decode(value, {stream:true});
         const lines = buf.split("\n"); buf = lines.pop()||"";
-        for (const l of lines) { if (l.trim().startsWith("data: ")) { try { const d=JSON.parse(l.trim().slice(6)); if(d.type==="token") setInfoText(t=>t+d.content); } catch{} } }
+        for (const l of lines) { if (l.trim().startsWith("data: ")) { try { const d=JSON.parse(l.trim().slice(6)); if(d.type==="token") setInfoText(t=>t+d.content); else if(d.type==="error") setInfoText("⚠️ "+d.message); } catch{} } }
       }
     } catch { setInfoText("Could not load. Try again."); }
+    clearInterval(progIv);
+    setInfoProgress(100);
+    setTimeout(() => setInfoProgress(0), 600);
     setInfoLoading(false);
   };
 
@@ -288,8 +310,9 @@ export default function CalendarPage() {
   };
 
   return (
-    <div style={{ minHeight:"100vh", background:"var(--bg-base)", fontFamily:"var(--font-mono)", color:"#e2e8f0" }}>
-      <div style={{ padding:"20px 24px 16px", display:"flex", alignItems:"flex-end", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.05)", flexWrap:"wrap", gap:10 }}>
+    <div style={{ minHeight:"100vh", background:"var(--bg-base)", fontFamily:"var(--font-mono)", color:"#e2e8f0", display:"flex", overflow:"hidden" }}>
+      <div style={{ flex:1, overflowY:"auto", minWidth:0, transition:"all 0.3s cubic-bezier(0.4,0,0.2,1)" }}>
+      <div style={{ padding:"20px 24px 16px", paddingRight: infoEvent ? "440px" : "24px", display:"flex", alignItems:"flex-end", justifyContent:"space-between", borderBottom:"1px solid rgba(255,255,255,0.05)", flexWrap:"wrap", gap:10, transition:"padding-right 0.3s cubic-bezier(0.4,0,0.2,1)" }}>
         <div>
           <div style={{ fontSize:10, color:"rgba(255,255,255,0.25)", letterSpacing:"0.12em", marginBottom:4 }}>QUANTSIGNAL · LIVE</div>
           <div style={{ fontSize:18, fontWeight:700, letterSpacing:"-0.02em" }}>Economic Calendar</div>
@@ -301,7 +324,7 @@ export default function CalendarPage() {
         </div>
       </div>
 
-      <div style={{ padding:"20px 24px", maxWidth:960, margin:"0 auto" }}>
+      <div style={{ padding:"20px 24px", paddingRight: infoEvent ? "440px" : "24px", transition:"padding-right 0.3s cubic-bezier(0.4,0,0.2,1)" }}>
         {!loading && spotlightEvents.length > 0 && (
           <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:9, fontWeight:700, color:"rgba(255,255,255,0.25)", letterSpacing:"0.12em", marginBottom:12 }}>⚡ SPOTLIGHT — HIGH IMPACT THIS WEEK</div>
@@ -337,28 +360,152 @@ export default function CalendarPage() {
         ))}
       </div>
 
-      {/* AI Playbook modal */}
+      </div>{/* end main scroll area */}
+
+      {/* AI Playbook — right side panel */}
+      <style>{`
+        @keyframes calSlideIn  { from { opacity:0; transform:translateX(24px) } to { opacity:1; transform:translateX(0) } }
+        @keyframes calShimmer  { 0%,100%{opacity:0.3} 50%{opacity:0.65} }
+        @keyframes calBlink    { 0%,100%{opacity:1} 50%{opacity:0} }
+      `}</style>
       {infoEvent && (
-        <>
-          <div onClick={()=>{setInfoEvent(null);setInfoText("");}} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.7)", zIndex:100 }}/>
-          <div style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", background:"#0d1117", border:"1px solid rgba(0,170,255,0.2)", borderRadius:14, padding:24, zIndex:101, width:"min(560px, 92vw)", maxHeight:"78vh", overflowY:"auto", boxShadow:"0 32px 80px rgba(0,0,0,0.7)" }}>
-            <button onClick={()=>{setInfoEvent(null);setInfoText("");}} style={{ position:"absolute", top:14, right:14, background:"none", border:"none", cursor:"pointer" }}><X size={14} color="rgba(255,255,255,0.35)"/></button>
-            <div style={{ fontSize:9, fontWeight:700, color:"#00aaff", letterSpacing:"0.12em", marginBottom:6 }}>AI PLAYBOOK</div>
-            <div style={{ fontSize:15, fontWeight:700, color:"#fff", marginBottom:2 }}>{infoEvent.title}</div>
-            <div style={{ fontSize:9, color:"rgba(255,255,255,0.3)", marginBottom:16 }}>{calFormatDate(infoEvent)} · <span style={{color:impactColor(infoEvent.impact)}}>{infoEvent.impact}</span></div>
-            {infoEvent.actual && (
-              <div style={{ display:"flex", gap:12, marginBottom:14, padding:"10px 12px", background:"rgba(255,255,255,0.03)", borderRadius:8, border:"1px solid rgba(255,255,255,0.06)" }}>
-                {infoEvent.forecast && <div><div style={{ fontSize:8, color:"rgba(255,255,255,0.3)" }}>FORECAST</div><div style={{ fontSize:13, fontWeight:600, color:"rgba(255,255,255,0.7)" }}>{infoEvent.forecast}</div></div>}
-                {infoEvent.previous && <div><div style={{ fontSize:8, color:"rgba(255,255,255,0.3)" }}>PREVIOUS</div><div style={{ fontSize:13, fontWeight:600, color:"rgba(255,255,255,0.5)" }}>{infoEvent.previous}</div></div>}
-                <div><div style={{ fontSize:8, color:"rgba(255,255,255,0.3)" }}>ACTUAL</div><div style={{ fontSize:13, fontWeight:700, color:"#00ff88" }}>{infoEvent.actual}</div></div>
+          <div style={{
+            position:"fixed", top:0, right:0, bottom:0,
+            width:"420px",
+            background:"rgba(7,11,20,0.97)",
+            backdropFilter:"blur(28px) saturate(180%)",
+            borderLeft:"1px solid " + (infoEvent.impact==="High" ? "rgba(255,68,102,0.3)" : infoEvent.impact==="Medium" ? "rgba(245,158,11,0.25)" : "rgba(0,170,255,0.2)"),
+            zIndex:99, overflowY:"auto",
+            boxShadow:"-24px 0 80px rgba(0,0,0,0.6)",
+            animation:"calSlideIn 0.3s cubic-bezier(0.4,0,0.2,1)",
+          }}>
+            {/* Impact accent bar — left edge */}
+            <div style={{ position:"absolute", top:0, left:0, bottom:0, width:3, background: infoEvent.impact==="High" ? "linear-gradient(180deg,#ff4466,#ff8c00)" : infoEvent.impact==="Medium" ? "linear-gradient(180deg,#f59e0b,#fbbf24)" : "linear-gradient(180deg,rgba(0,170,255,0.6),rgba(0,255,136,0.4))" }} />
+            {/* Progress bar */}
+            {infoProgress > 0 && (
+              <div style={{ position:"absolute", top:3, left:0, right:0, height:2, background:"rgba(255,255,255,0.05)", borderRadius:2 }}>
+                <div style={{ height:"100%", width:infoProgress+"%", background:"linear-gradient(90deg,#00aaff,#00ff88)", transition:"width 0.3s ease" }} />
               </div>
             )}
-            <div style={{ background:"rgba(0,170,255,0.03)", border:"1px solid rgba(0,170,255,0.08)", borderRadius:8, padding:16, minHeight:80, fontSize:12, color:"rgba(255,255,255,0.7)", lineHeight:1.8 }}>
-              {infoLoading && !infoText && <span style={{ color:"rgba(255,255,255,0.25)", fontSize:11 }}>Perseus is analyzing...</span>}
-              {infoText && <div style={{ whiteSpace:"pre-wrap" }}>{infoText}</div>}
+            <div style={{ padding:"22px 20px 26px 28px" }}>
+              {/* Header */}
+              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:18 }}>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:9, fontWeight:700, letterSpacing:"0.14em", marginBottom:6, color: infoEvent.impact==="High"?"#ff4466":infoEvent.impact==="Medium"?"#f59e0b":"#00aaff" }}>
+                    {infoEvent.impact==="High"?"🔴":infoEvent.impact==="Medium"?"🟡":"🔵"} AI PLAYBOOK &nbsp;·&nbsp; {(infoEvent.impact||"").toUpperCase()} IMPACT
+                  </div>
+                  <div style={{ fontSize:18, fontWeight:700, color:"#fff", lineHeight:1.3, marginBottom:5 }}>{infoEvent.title}</div>
+                  <div style={{ fontSize:9, color:"rgba(255,255,255,0.28)" }}>{infoEvent.flag} &nbsp;{calFormatDate(infoEvent)}</div>
+                </div>
+                <button onClick={()=>{setInfoEvent(null);setInfoText("");}} style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:7, cursor:"pointer", padding:"5px 8px", marginLeft:14, flexShrink:0, lineHeight:1 }}>
+                  <X size={12} color="rgba(255,255,255,0.45)"/>
+                </button>
+              </div>
+              {/* Data chips */}
+              <div style={{ display:"flex", gap:8, marginBottom:20, flexWrap:"wrap" }}>
+                {[
+                  {label:"FORECAST", value:infoEvent.forecast, color:"rgba(255,255,255,0.75)"},
+                  {label:"PREVIOUS", value:infoEvent.previous, color:"rgba(255,255,255,0.45)"},
+                  {label:"ACTUAL",   value:infoEvent.actual,   color:"#00ff88"},
+                ].filter(d=>d.value).map(d=>(
+                  <div key={d.label} style={{ padding:"9px 14px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:9, minWidth:72 }}>
+                    <div style={{ fontSize:8, color:"rgba(255,255,255,0.22)", fontWeight:700, letterSpacing:"0.1em", marginBottom:5 }}>{d.label}</div>
+                    <div style={{ fontSize:15, fontWeight:700, color:d.color }}>{d.value}</div>
+                  </div>
+                ))}
+                {(infoEvent.affected_assets||[]).slice(0,4).map((a:string)=>(
+                  <div key={a} style={{ padding:"9px 12px", background:"rgba(0,170,255,0.05)", border:"1px solid rgba(0,170,255,0.13)", borderRadius:9 }}>
+                    <div style={{ fontSize:8, color:"rgba(0,170,255,0.5)", marginBottom:5 }}>ASSET</div>
+                    <div style={{ fontSize:13, fontWeight:700, color:"#00aaff" }}>{a}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Skeleton loader */}
+              {infoLoading && !infoText && (
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {[80,58,90,50,70,62].map((w,i)=>(
+                    <div key={i} style={{ height:9, borderRadius:4, background:"rgba(255,255,255,0.05)", width:w+"%", animation:"calShimmer 1.5s ease-in-out infinite", animationDelay:(i*0.11)+"s" }}/>
+                  ))}
+                </div>
+              )}
+              {/* Streaming text with cursor */}
+              {infoLoading && infoText && (
+                <div style={{ fontSize:12, color:"rgba(255,255,255,0.55)", lineHeight:1.9, whiteSpace:"pre-wrap" }}>
+                  {infoText}
+                  <span style={{ display:"inline-block", width:8, height:13, background:"#00aaff", marginLeft:2, animation:"calBlink 1s step-end infinite", verticalAlign:"text-bottom", borderRadius:1 }}/>
+                </div>
+              )}
+              {/* Parsed analysis cards */}
+              {!infoLoading && infoText && (()=>{
+                const get = (key:string) => {
+                  const after = infoText.split(key+":")[1];
+                  if (!after) return "";
+                  const end = after.split("\n").findIndex((x,j) => j > 0 && x.length > 2 && x[0] >= "A" && x[0] <= "Z" && x.indexOf(":") > 0 && x.indexOf(":") < 12);
+                  return (end === -1 ? after : after.split("\n").slice(0, end).join("\n")).trim();
+                };
+                const verdict    = get("VERDICT");
+                const beat       = get("BEAT");
+                const miss       = get("MISS");
+                const inline     = get("INLINE");
+                const timeframe  = get("TIMEFRAME");
+                const confidence = get("CONFIDENCE");
+                const risk       = get("RISK");
+                const confColor  = confidence.includes("HIGH")?"#00ff88":confidence.includes("LOW")?"#ff4466":"#f59e0b";
+                return (
+                  <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                    {verdict && (
+                      <div style={{ padding:"12px 14px", background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:10 }}>
+                        <div style={{ fontSize:8, color:"rgba(255,255,255,0.25)", fontWeight:700, letterSpacing:"0.12em", marginBottom:6 }}>VERDICT</div>
+                        <div style={{ fontSize:13, color:"#e2e8f0", lineHeight:1.65 }}>{verdict}</div>
+                      </div>
+                    )}
+                    <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+                      {confidence && (
+                        <div style={{ padding:"10px 12px", background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10 }}>
+                          <div style={{ fontSize:8, color:"rgba(255,255,255,0.22)", marginBottom:5 }}>CONFIDENCE</div>
+                          <div style={{ fontSize:15, fontWeight:800, color:confColor }}>{confidence.split(" ")[0]}</div>
+                        </div>
+                      )}
+                      {timeframe && (
+                        <div style={{ padding:"10px 12px", background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10 }}>
+                          <div style={{ fontSize:8, color:"rgba(255,255,255,0.22)", marginBottom:5 }}>TIMEFRAME</div>
+                          <div style={{ fontSize:11, fontWeight:600, color:"#f59e0b", lineHeight:1.4 }}>{timeframe}</div>
+                        </div>
+                      )}
+                    </div>
+                    {beat && (
+                      <div style={{ padding:"12px 14px", background:"rgba(0,255,136,0.03)", border:"1px solid rgba(0,255,136,0.13)", borderRadius:10 }}>
+                        <div style={{ fontSize:8, color:"#00ff88", fontWeight:700, letterSpacing:"0.1em", marginBottom:6 }}>🟢 BEAT SCENARIO</div>
+                        <div style={{ fontSize:12, color:"rgba(255,255,255,0.65)", lineHeight:1.7 }}>{beat}</div>
+                      </div>
+                    )}
+                    {miss && (
+                      <div style={{ padding:"12px 14px", background:"rgba(255,68,102,0.03)", border:"1px solid rgba(255,68,102,0.13)", borderRadius:10 }}>
+                        <div style={{ fontSize:8, color:"#ff4466", fontWeight:700, letterSpacing:"0.1em", marginBottom:6 }}>🔴 MISS SCENARIO</div>
+                        <div style={{ fontSize:12, color:"rgba(255,255,255,0.65)", lineHeight:1.7 }}>{miss}</div>
+                      </div>
+                    )}
+                    {inline && (
+                      <div style={{ padding:"12px 14px", background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:10 }}>
+                        <div style={{ fontSize:8, color:"rgba(255,255,255,0.28)", fontWeight:700, letterSpacing:"0.1em", marginBottom:6 }}>⚪ IN-LINE</div>
+                        <div style={{ fontSize:12, color:"rgba(255,255,255,0.5)", lineHeight:1.7 }}>{inline}</div>
+                      </div>
+                    )}
+                    {risk && (
+                      <div style={{ padding:"11px 14px", background:"rgba(245,158,11,0.04)", border:"1px solid rgba(245,158,11,0.13)", borderRadius:10, display:"flex", gap:10, alignItems:"flex-start" }}>
+                        <span style={{ fontSize:14, flexShrink:0, marginTop:1 }}>⚠️</span>
+                        <div>
+                          <div style={{ fontSize:8, color:"#f59e0b", fontWeight:700, letterSpacing:"0.1em", marginBottom:4 }}>KEY RISK</div>
+                          <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)", lineHeight:1.65 }}>{risk}</div>
+                        </div>
+                      </div>
+                    )}
+                    <div style={{ fontSize:8, color:"rgba(255,255,255,0.11)", lineHeight:1.5, paddingTop:2 }}>Not financial advice. Always manage risk.</div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
-        </>
       )}
 
       {/* Reminder modal */}
