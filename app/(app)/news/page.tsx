@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { X } from "lucide-react";
 
-const API = "https://quantsignal-api-production-a5e1.up.railway.app/api/v1";
+const API = "https://quantsignal-api.onrender.com/api/v1";
 
 const CATEGORIES = ["ALL", "CRYPTO", "EQUITY", "MACRO", "COMMODITY", "FOREX", "INDIA"] as const;
 type Category = typeof CATEGORIES[number];

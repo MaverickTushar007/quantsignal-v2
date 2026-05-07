@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Bell, X, ChevronDown, ChevronUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const CAL_API = "https://quantsignal-api-production-a5e1.up.railway.app/api/v1";
+const CAL_API = "https://quantsignal-api.onrender.com/api/v1";
 
 function calFormatDate(e: any) {
   return [e.date_display, e.time_display].filter(Boolean).join(" · ");
