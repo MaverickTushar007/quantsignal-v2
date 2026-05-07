@@ -37,6 +37,14 @@ export default function NewsPage() {
   const [category, setCategory]     = useState<Category>("ALL");
   const [sentiment, setSentiment]   = useState<"ALL"|"BULLISH"|"BEARISH"|"NEUTRAL">("ALL");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [sourceWeights, setSourceWeights] = useState<Record<string, { weight: number; accuracy: number; confidence_tier: string }>>({});
+
+  useEffect(() => {
+    fetch(`${API}/news/backtest-summary`)
+      .then(r => r.json())
+      .then(d => { if (d.by_source) setSourceWeights(d.by_source); })
+      .catch(() => {});
+  }, []);
 
   // Analysis panel state
   const [activeArticle, setActiveArticle] = useState<Article | null>(null);
@@ -143,6 +151,21 @@ REASONING: [2-3 sentences of deeper context a trader needs to know]`;
   const mono = "var(--font-mono)";
   const confColor = (c: string) => c?.includes("HIGH") ? "#00ff88" : c?.includes("LOW") ? "#ff4466" : "#f59e0b";
 
+  const CredibilityDot = ({ source }: { source: string }) => {
+    const data = sourceWeights[source];
+    if (!data) return null;
+    const acc = data.accuracy as number;
+    const tier = data.confidence_tier as string;
+    const color = acc >= 0.6 ? "#00ff88" : acc >= 0.4 ? "#f59e0b" : "#ff4466";
+    return (
+      <span title={`${source}: ${Math.round(acc * 100)}% TB accuracy · ${tier} sample`} style={{
+        display: "inline-block", width: 5, height: 5, borderRadius: "50%",
+        background: color, marginLeft: 4, verticalAlign: "middle",
+        boxShadow: `0 0 3px ${color}99`, cursor: "help", flexShrink: 0,
+      }} />
+    );
+  };
+
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-base)", fontFamily: mono, color: "#e2e8f0", display: "flex", flexDirection: "column" }}>
 
@@ -218,7 +241,7 @@ REASONING: [2-3 sentences of deeper context a trader needs to know]`;
                       <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", marginBottom: 8 }}>{a.summary}</div>
                     )}
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)" }}>{a.source} · <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(0,170,255,0.5)", textDecoration: "none" }}>Read →</a></span>
+                      <span style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", display: "inline-flex", alignItems: "center", gap: 3 }}>{a.source}<CredibilityDot source={a.source} /> · <a href={a.url} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(0,170,255,0.5)", textDecoration: "none" }}>Read →</a></span>
                     </div>
                   </div>
 
