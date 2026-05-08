@@ -501,7 +501,7 @@ function NewsTab({ symbol, token }: { symbol: string; token?: string }) {
   const [analysisText, setAnalysisText]     = useState("");
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [progress, setProgress] = useState(0);
-  const API = "https://quantsignal-api.onrender.com/api/v1";
+  const API = process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1";
 
   useEffect(() => {
     setLoading(true);

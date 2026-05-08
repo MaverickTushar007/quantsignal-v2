@@ -16,8 +16,8 @@ export default function AlertsPage() {
     const h: Record<string, string> = session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
     if (authLoading) return;
     Promise.allSettled([
-      fetch(`${API_BASE}/api/v1/alerts/performance`, { headers: h }).then(r => r.json()),
-      fetch(`${API_BASE}/api/v1/signals`, { headers: h }).then(r => r.json()),
+      fetch(`${API_BASE}/alerts/performance`, { headers: h }).then(r => r.json()),
+      fetch(`${API_BASE}/signals`, { headers: h }).then(r => r.json()),
     ]).then(([p, s]) => {
       if (p.status === "fulfilled") setPerf(p.value);
       if (s.status === "fulfilled") setSignals(Array.isArray(s.value) ? s.value : []);

@@ -112,7 +112,7 @@ export default function PortfolioPage() {
     if (valid.length < 1) { setError("Add at least one asset with an amount."); return; }
     setLoading(true); setError(""); setResult(null);
     try {
-      const res = await fetch(`${API_BASE}/api/v1/portfolio/analyze`, {
+      const res = await fetch(`${API_BASE}/portfolio/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}) },
         body: JSON.stringify({ assets: valid.map(h => ({ symbol: h.symbol, amount: h.amount })), total_capital: capital }),

@@ -68,7 +68,7 @@ export async function streamPerseusChat(
   }));
   const message = messages[messages.length - 1].content;
 
-  const res = await fetch(`${API_BASE}/api/v1/chat`, {
+  const res = await fetch(`${API_BASE}/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

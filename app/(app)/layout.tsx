@@ -20,7 +20,7 @@ const NAV = [
   { href: "/alerts",     label: "Alerts",      icon: "◬", desc: "Notifications" },
 ];
 
-const CAL_API = "https://quantsignal-api.onrender.com/api/v1";
+const CAL_API = process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1";
 
 function CalendarStrip() {
   const [events, setEvents] = useState<any[]>([]);
