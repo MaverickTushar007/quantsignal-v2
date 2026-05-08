@@ -32,6 +32,8 @@ export interface Signal {
   regime?: string; timeframe?: string; rationale?: string; reasoning?: string;
   model_agreement?: number; top_features?: string[];
   confluence?: { name: string; value: string; signal: string }[];
+  confluence_conflict?: boolean;
+  confluence_confidence?: string;
   news?: { title: string; source: string; sentiment: string; url: string }[];
   price_change_pct?: number; indicators?: Record<string, string | number>;
   generated_at?: string; signal_age_hours?: number; is_stale?: boolean;

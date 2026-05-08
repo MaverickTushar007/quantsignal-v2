@@ -400,6 +400,13 @@ function SignalCard({ s, featured, onClick }: { s: Signal; featured?: boolean; o
           )}
         </div>
 
+        {/* Confluence conflict warning */}
+        {(s as any).confluence_conflict && (
+          <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 5, background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "var(--radius-sm)", padding: "4px 8px" }}>
+            <span style={{ fontSize: 9, color: "#f59e0b" }}>⚠</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 8, color: "#f59e0b", letterSpacing: "0.06em" }}>LOW CONFLUENCE</span>
+          </div>
+        )}
         {/* Click hint */}
         <div style={{ marginTop: 8, fontSize: 8, color: "var(--text-disabled)", textAlign: "right", letterSpacing: "0.05em" }}>click for details →</div>
       </div>
