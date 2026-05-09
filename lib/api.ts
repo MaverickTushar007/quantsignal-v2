@@ -42,19 +42,19 @@ export interface Signal {
 }
 
 export async function fetchSignals(token?: string): Promise<Signal[]> {
-  return request<Signal[]>("/api/v1/signals", { headers: token ? authHeader(token) : {} });
+  return request<Signal[]>("/signals", { headers: token ? authHeader(token) : {} });
 }
 export async function fetchSignalReasoning(symbol: string, token?: string): Promise<any> {
-  return request(`/api/v1/signals/${symbol}/reasoning`, { headers: token ? authHeader(token) : {} });
+  return request(`/signals/${symbol}/reasoning`, { headers: token ? authHeader(token) : {} });
 }
 export async function fetchNews(symbol: string, token?: string): Promise<any> {
-  return request(`/api/v1/news/${symbol}`, { headers: token ? authHeader(token) : {} });
+  return request(`/news/${symbol}`, { headers: token ? authHeader(token) : {} });
 }
 export async function fetchRegime(symbol: string, token?: string): Promise<any> {
-  return request(`/api/v1/regime/${symbol}`, { headers: token ? authHeader(token) : {} });
+  return request(`/regime/${symbol}`, { headers: token ? authHeader(token) : {} });
 }
 export async function fetchHealth(): Promise<{ status: string; signals_count: number }> {
-  return request("/api/v1/health");
+  return request("/health");
 }
 
 export interface PerseusMessage { role: "user" | "assistant"; content: string; }
@@ -110,12 +110,12 @@ export async function streamPerseusChat(
   return full;
 }
 export async function fetchSignal(symbol: string, token?: string): Promise<any> {
-  return request<any>(`/api/v1/signals/${symbol}`, { headers: token ? authHeader(token) : {} });
+  return request<any>(`/signals/${symbol}`, { headers: token ? authHeader(token) : {} });
 }
 
 export async function fetchBacktest(symbol: string, token?: string): Promise<any> {
-  return request<any>(`/api/v1/backtest/${symbol}`, { headers: token ? authHeader(token) : {} });
+  return request<any>(`/backtest/${symbol}`, { headers: token ? authHeader(token) : {} });
 }
 export async function fetchOutcomes(token?: string): Promise<any> {
-  return request<any>(`/api/v1/signals/outcomes`, { headers: token ? authHeader(token) : {} });
+  return request<any>(`/signals/outcomes`, { headers: token ? authHeader(token) : {} });
 }
