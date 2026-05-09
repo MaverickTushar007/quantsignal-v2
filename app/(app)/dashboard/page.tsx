@@ -57,7 +57,7 @@ function SignalDrawer({ s, onClose, userEmail }: { s: Signal | null; onClose: ()
     setAlertStatus("loading");
     try {
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
-      const res = await fetch(apiBase + "/api/v1/alerts/subscribe", {
+      const res = await fetch(apiBase + "/alerts/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: alertEmail, symbols: [s!.symbol], directions: ["BUY","SELL"] }),
@@ -457,7 +457,7 @@ export default function DashboardPage() {
       const [sigs, h] = await Promise.all([fetchSignals(session?.access_token), fetchHealth()]);
       setSignals(sigs); setHealth(h);
       const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
-      fetch(apiBase + "/api/v1/system/morning-briefing")
+      fetch(apiBase + "/system/morning-briefing")
         .then(r => r.json()).then(b => { if (b.briefing_text) setBriefing(b); }).catch(() => {});
       setLastUpdated(new Date().toLocaleTimeString()); setError("");
     } catch (e: any) { setError(e.message ?? "Failed to load"); }
