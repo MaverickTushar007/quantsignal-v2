@@ -11,8 +11,8 @@ const NAV = [
   { href: "/agents",     label: "Agents",      icon: "◉", desc: "AI agents" },
   { href: "/calendar",   label: "Calendar",    icon: "▦", desc: "Econ events" },
   { href: "/news",       label: "News",        icon: "◪", desc: "Market news feed" },
-  { href: "/backtest",   label: "Backtest",    icon: "◈", desc: "WF validation results" },
   { href: "/research",   label: "Research",    icon: "◑", desc: "Evidence intel" },
+  { href: "/backtest",   label: "Backtest",    icon: "◈", desc: "WF validation results" },
 
 ];
 
