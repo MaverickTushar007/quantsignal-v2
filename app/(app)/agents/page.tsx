@@ -33,6 +33,11 @@ export default function AgentsPage() {
   const [streaming, setStreaming] = useState(false);
   const [streamBuffer, setStreamBuffer] = useState("");
   const [error, setError]       = useState("");
+  const [signals, setSignals]   = useState<any[]>([]);
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1"}/signals`)
+      .then(r => r.json()).then(setSignals).catch(() => {});
+  }, []);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLTextAreaElement>(null);
 
@@ -42,8 +47,10 @@ export default function AgentsPage() {
     const content = (text ?? input).trim();
     if (!content || streaming) return;
     setInput(""); setError(""); setStreamBuffer("");
-    const userMsg: PerseusMessage = { role: "user", content };
-    const history = [...messages, userMsg];
+    const topSignals = signals.slice(0,20).map((s:any) => `${s.symbol} ${s.direction} prob=${s.probability?.toFixed(2)} conf=${s.confidence} ev=${s.expected_value?.toFixed(2)} kelly=${s.kelly_size?.toFixed(1)}%`).join("\n");
+    const context = signals.length > 0 ? `[LIVE SIGNAL DATA - ${signals.length} assets tracked]\n${topSignals}\n\n[USER QUESTION]: ` : "";
+    const userMsg: PerseusMessage = { role: "user", content: context + content };
+    const history = [...messages, { role: "user" as const, content }];
     setMessages(history);
     setStreaming(true);
     try {
