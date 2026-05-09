@@ -56,12 +56,18 @@ export default function NewsPage() {
   const load = async () => {
     try {
       const token = session?.access_token;
-      const res = await fetch(`${API}/news/feed`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setArticles(Array.isArray(data) ? data : []);
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const symbols = ["BTC-USD", "ETH-USD", "SOL-USD", "^NSEI", "NVDA", "AAPL", "GOLD"];
+      const results = await Promise.all(
+        symbols.map(s => fetch(`${API}/news/${encodeURIComponent(s)}`, { headers }).then(r => r.ok ? r.json() : null))
+      );
+      const all = results
+        .filter(Boolean)
+        .flatMap((d: any) => (d.items || []).map((item: any) => ({ ...item, symbol: d.symbol })));
+      const seen = new Set<string>();
+      const deduped = all.filter(a => { if (seen.has(a.title)) return false; seen.add(a.title); return true; });
+      deduped.sort((a: any, b: any) => new Date(b.published || 0).getTime() - new Date(a.published || 0).getTime());
+      setArticles(deduped);
       setLastUpdate(new Date());
     } catch { setError("Failed to load news."); }
     finally { setLoading(false); }
