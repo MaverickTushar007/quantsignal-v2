@@ -103,15 +103,38 @@ QUESTION: ${userContent}`;
     setStreamBuffer("");
 
     const userMsg: PerseusMessage = { role: "user", content };
-    const contextMsg: PerseusMessage = { role: "user", content: buildContext(content) };
     const history = [...messages, userMsg];
     setMessages(history);
     setStreaming(true);
 
+    // Build signal context as assistant preload in history
+    // so model treats it as ground truth, not background instruction
+    const sorted = [...signals].sort((a, b) =>
+      (b.expected_value||0)*(b.probability||0) - (a.expected_value||0)*(a.probability||0)
+    );
+    const buys = signals.filter(s => s.direction === "BUY").length;
+    const sells = signals.filter(s => s.direction === "SELL").length;
+    const sigJson = sorted.slice(0,50).map(s =>
+      `{"sym":"${s.symbol}","dir":"${s.direction}","prob":${((s.probability||0)*100).toFixed(0)}%,"conf":"${s.confidence}","EV":${(s.expected_value||0).toFixed(2)},"kelly":${(s.kelly_size||0).toFixed(1)}%,"price":$${(s.current_price||0).toFixed(2)},"TP":$${(s.take_profit||0).toFixed(2)},"SL":$${(s.stop_loss||0).toFixed(2)}}`
+    ).join("
+");
+
+    const dataInjection: PerseusMessage = {
+      role: "user",
+      content: `[QUANTSIGNAL LIVE DATA FEED — ${signals.length} assets — USE ONLY THESE NUMBERS]
+Market: ${buys>sells?"RISK-ON":"RISK-OFF"} | BUY:${buys} SELL:${sells}
+${sigJson}
+[END DATA — now answer the question using ONLY the prices above]`
+    };
+    const dataAck: PerseusMessage = {
+      role: "assistant",
+      content: `Understood. I have loaded ${signals.length} live signals. I will only cite prices, directions, TPs and SLs from the data feed above. I will never use my training data for prices.`
+    };
+
     try {
       let full = "";
-      const historyForApi = messages.map(m => m);
-      await streamPerseusChat([...historyForApi, contextMsg], (token) => {
+      const historyForApi = messages.length > 0 ? messages : [];
+      await streamPerseusChat([dataInjection, dataAck, ...historyForApi, userMsg], (token) => {
         full += token;
         setStreamBuffer(prev => prev + token);
       }, session?.access_token);
