@@ -77,7 +77,7 @@ export async function streamPerseusChat(
       "Content-Type": "application/json",
       ...(token ? authHeader(token) : {}),
     },
-    body: JSON.stringify({ message, history }),
+    body: JSON.stringify({ symbol: "GENERIC", message, history }),
   });
 
   if (!res.ok) {
