@@ -30,7 +30,7 @@ export function useAuth(): AuthState {
     if (!u) { setIsPro(false); return; }
     try {
       const { data } = await supabase
-        .from("user_profiles")
+        .from("profiles")
         .select("plan")
         .eq("id", u.id)
         .single();
