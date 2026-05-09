@@ -1,6 +1,6 @@
 const API_BASE = (() => {
   const url = process.env.NEXT_PUBLIC_API_URL;
-  if (!url) throw new Error("NEXT_PUBLIC_API_URL is not set");
+  if (!url) return "https://quantsignal-api.onrender.com/api/v1";
   return url.replace(/\/$/, "");
 })();
 
