@@ -47,9 +47,25 @@ export default function AgentsPage() {
     const content = (text ?? input).trim();
     if (!content || streaming) return;
     setInput(""); setError(""); setStreamBuffer("");
-    const topSignals = signals.slice(0,20).map((s:any) => `${s.symbol} ${s.direction} prob=${s.probability?.toFixed(2)} conf=${s.confidence} ev=${s.expected_value?.toFixed(2)} kelly=${s.kelly_size?.toFixed(1)}%`).join("\n");
-    const context = signals.length > 0 ? `[LIVE SIGNAL DATA - ${signals.length} assets tracked]\n${topSignals}\n\n[USER QUESTION]: ` : "";
-    const userMsg: PerseusMessage = { role: "user", content: context + content };
+    const top = signals.slice(0,40).map((s:any) => 
+      `${s.symbol} (${s.name||s.symbol}): ${s.direction} | prob=${(s.probability*100).toFixed(1)}% | conf=${s.confidence} | EV=${s.expected_value?.toFixed(2)}x | kelly=${s.kelly_size?.toFixed(1)}% | price=$${s.current_price?.toFixed(2)} | tp=$${s.take_profit?.toFixed(2)} | sl=$${s.stop_loss?.toFixed(2)} | type=${s.type}`
+    ).join("\n");
+    const buys = signals.filter((s:any)=>s.direction==="BUY").length;
+    const sells = signals.filter((s:any)=>s.direction==="SELL").length;
+    const highConv = signals.filter((s:any)=>s.confidence==="HIGH").length;
+    const systemCtx = signals.length > 0 ? `You are Perseus, QuantSignal's institutional-grade AI analyst. You have access to LIVE signal data for ${signals.length} assets. Be specific, cite actual symbols and numbers from the data. Be concise and trader-friendly.
+
+LIVE MARKET SNAPSHOT:
+- Total signals: ${signals.length} | BUY: ${buys} | SELL: ${sells} | HIGH conviction: ${highConv}
+- Market bias: ${buys > sells ? "RISK-ON ("+Math.round(buys/signals.length*100)+"% bullish)" : "RISK-OFF ("+Math.round(sells/signals.length*100)+"% bearish)"}
+
+TOP 40 SIGNALS (symbol | direction | probability | confidence | expected value | kelly size | price | take profit | stop loss | asset type):
+${top}
+
+Rules: Always cite specific symbols and numbers. Never say "data not available" for fields above. Be direct and actionable. Format responses clearly with sections.
+
+USER QUESTION: ` : "";
+    const userMsg: PerseusMessage = { role: "user", content: systemCtx + content };
     const history = [...messages, { role: "user" as const, content }];
     setMessages(history);
     setStreaming(true);
