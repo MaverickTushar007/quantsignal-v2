@@ -51,7 +51,7 @@ export default function NewsPage() {
   const load = async () => {
     try {
       const token = session?.access_token;
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
       const symbols = ["BTC-USD", "ETH-USD", "SOL-USD", "^NSEI", "NVDA", "AAPL", "GOLD"];
       const results = await Promise.all(
         symbols.map(s => fetch(`${API}/news/${encodeURIComponent(s)}`, { headers }).then(r => r.ok ? r.json() : null))
