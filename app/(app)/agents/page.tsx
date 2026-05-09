@@ -53,18 +53,24 @@ export default function AgentsPage() {
     const buys = signals.filter((s:any)=>s.direction==="BUY").length;
     const sells = signals.filter((s:any)=>s.direction==="SELL").length;
     const highConv = signals.filter((s:any)=>s.confidence==="HIGH").length;
-    const systemCtx = signals.length > 0 ? `You are Perseus, QuantSignal's institutional-grade AI analyst. You have access to LIVE signal data for ${signals.length} assets. Be specific, cite actual symbols and numbers from the data. Be concise and trader-friendly.
+    const systemCtx = signals.length > 0 ? `CRITICAL INSTRUCTION: You are Perseus. The ONLY data you are allowed to use for prices, directions, probabilities, take profits, stop losses, and kelly sizes is the LIVE DATA below. DO NOT use your training data for any numbers. If you cite a price, it MUST come from the table below. If you cite a direction, it MUST come from the table below.
 
-LIVE MARKET SNAPSHOT:
-- Total signals: ${signals.length} | BUY: ${buys} | SELL: ${sells} | HIGH conviction: ${highConv}
-- Market bias: ${buys > sells ? "RISK-ON ("+Math.round(buys/signals.length*100)+"% bullish)" : "RISK-OFF ("+Math.round(sells/signals.length*100)+"% bearish)"}
+LIVE MARKET DATA (${signals.length} assets | as of right now):
+BUY signals: ${buys} | SELL signals: ${sells} | HOLD: ${signals.length-buys-sells} | HIGH conviction: ${highConv}
+Overall bias: ${buys > sells ? "RISK-ON — "+Math.round(buys/signals.length*100)+"% bullish" : "RISK-OFF — "+Math.round(sells/signals.length*100)+"% bearish"}
 
-TOP 40 SIGNALS (symbol | direction | probability | confidence | expected value | kelly size | price | take profit | stop loss | asset type):
+FORMAT: SYMBOL | DIRECTION | PROB% | CONFIDENCE | EV | KELLY% | LIVE_PRICE | TAKE_PROFIT | STOP_LOSS | TYPE
 ${top}
 
-Rules: Always cite specific symbols and numbers. Never say "data not available" for fields above. Be direct and actionable. Format responses clearly with sections.
+RULES:
+1. Every price you mention MUST match the LIVE_PRICE column above exactly.
+2. Every direction (BUY/SELL/HOLD) MUST match the DIRECTION column above.
+3. Every probability MUST match the PROB% column above.
+4. Never invent numbers. Never use training data prices.
+5. Be concise, trader-friendly, and direct.
+6. If asked for top signals, rank by EV × PROB descending.
 
-USER QUESTION: ` : "";
+QUESTION: ` : "";
     const userMsg: PerseusMessage = { role: "user", content: systemCtx + content };
     const history = [...messages, { role: "user" as const, content }];
     setMessages(history);
