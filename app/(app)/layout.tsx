@@ -12,6 +12,7 @@ const NAV = [
   { href: "/research",   label: "Research",    icon: "◑", desc: "Evidence intel" },
   { href: "/calendar",   label: "Calendar",    icon: "▦", desc: "Econ events" },
   { href: "/news",       label: "News",        icon: "◪", desc: "Market news feed" },
+  { href: "/agents",     label: "Agents",      icon: "◉", desc: "AI agents" },
 
 ];
 
