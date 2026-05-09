@@ -39,12 +39,7 @@ export default function NewsPage() {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [sourceWeights, setSourceWeights] = useState<Record<string, { weight: number; accuracy: number; confidence_tier: string }>>({});
 
-  useEffect(() => {
-    fetch(`${API}/news/backtest-summary`)
-      .then(r => r.json())
-      .then(d => { if (d.by_source) setSourceWeights(d.by_source); })
-      .catch(() => {});
-  }, []);
+  // backtest-summary endpoint not available — sourceWeights stays empty
 
   // Analysis panel state
   const [activeArticle, setActiveArticle] = useState<Article | null>(null);
@@ -63,7 +58,7 @@ export default function NewsPage() {
       );
       const all = results
         .filter(Boolean)
-        .flatMap((d: any) => (d.items || []).map((item: any) => ({ ...item, symbol: d.symbol })));
+        .flatMap((d: any) => (d.items || []).map((item: any) => ({ ...item, symbol: d.symbol, category: item.category || "GENERAL" })));
       const seen = new Set<string>();
       const deduped = all.filter(a => { if (seen.has(a.title)) return false; seen.add(a.title); return true; });
       deduped.sort((a: any, b: any) => new Date(b.published || 0).getTime() - new Date(a.published || 0).getTime());
