@@ -31,8 +31,8 @@ export default function BacktestPage() {
   const sans = "var(--font-sans)";
 
   useEffect(() => {
-    const base = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
-    fetch(`${base}/api/v1/signals/outcomes`)
+    const base = (process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1").replace(/\/$/, "");
+    fetch(`${base}/signals/outcomes`)
       .then(r => r.json()).then(setOutcomes).catch(() => {});
   }, []);
 
