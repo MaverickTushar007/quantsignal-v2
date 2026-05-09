@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/useAuth";
 const NAV = [
   { href: "/dashboard",  label: "Dashboard",  icon: "▣", desc: "Signals & market" },
   { href: "/signals",    label: "Signals",     icon: "◎", desc: "Live signal feed" },
+  { href: "/backtest",   label: "Backtest",    icon: "◈", desc: "WF validation results" },
   { href: "/research",   label: "Research",    icon: "◑", desc: "Evidence intel" },
   { href: "/calendar",   label: "Calendar",    icon: "📅", desc: "Econ events" },
   { href: "/news",       label: "News",        icon: "📰", desc: "Market news feed" },

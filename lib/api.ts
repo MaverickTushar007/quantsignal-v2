@@ -37,6 +37,7 @@ export interface Signal {
   news?: { title: string; source: string; sentiment: string; url: string }[];
   price_change_pct?: number; indicators?: Record<string, string | number>;
   generated_at?: string; signal_age_hours?: number; is_stale?: boolean;
+  wf_validated?: boolean;
   [key: string]: any;
 }
 
@@ -110,4 +111,11 @@ export async function streamPerseusChat(
 }
 export async function fetchSignal(symbol: string, token?: string): Promise<any> {
   return request<any>(`/api/v1/signals/${symbol}`, { headers: token ? authHeader(token) : {} });
+}
+
+export async function fetchBacktest(symbol: string, token?: string): Promise<any> {
+  return request<any>(`/api/v1/backtest/${symbol}`, { headers: token ? authHeader(token) : {} });
+}
+export async function fetchOutcomes(token?: string): Promise<any> {
+  return request<any>(`/api/v1/signals/outcomes`, { headers: token ? authHeader(token) : {} });
 }
