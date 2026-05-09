@@ -1,27 +1,25 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
-	"name": "quantsignal-v2",
-	"compatibility_date": "2026-05-09",
-	"compatibility_flags": [
-		"nodejs_compat",
-		"global_fetch_strictly_public"
-	],
-	"assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS"
-	},
-	"services": [
-		{
-			// Self-reference service binding, the service name must match the worker name
-			// see https://opennext.js.org/cloudflare/caching
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "quantsignal-v2"
-		}
-	],
-	"images": {
-		// Enable image optimization
-		// see https://opennext.js.org/cloudflare/howtos/image
-		"binding": "IMAGES"
-	}
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "quantsignal-v2",
+  "compatibility_date": "2026-05-09",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "quantsignal-v2"
+    }
+  ],
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://xvwkloqmzgwqsouxhgiy.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2d2tsb3Ftemd3cXNvdXhoZ2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4NTI5MTUsImV4cCI6MjA4OTQyODkxNX0.KvAquo0TNl6Ww76UevRAI-tqxtBLQ5_mqKwFkGhc1XM",
+    "NEXT_PUBLIC_API_URL": "https://quantsignal-api.onrender.com/api/v1"
+  }
 }
