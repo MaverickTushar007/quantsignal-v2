@@ -34,9 +34,12 @@ export default function AgentsPage() {
   const [streamBuffer, setStreamBuffer] = useState("");
   const [error, setError]       = useState("");
   const [signals, setSignals]   = useState<any[]>([]);
+  const [signalsReady, setSignalsReady] = useState(false);
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1"}/signals`)
-      .then(r => r.json()).then(setSignals).catch(() => {});
+    fetch("https://quantsignal-api.onrender.com/api/v1/signals")
+      .then(r => r.json())
+      .then(d => { setSignals(d); setSignalsReady(true); })
+      .catch(() => setSignalsReady(true));
   }, []);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLTextAreaElement>(null);
@@ -45,7 +48,7 @@ export default function AgentsPage() {
 
   async function send(text?: string) {
     const content = (text ?? input).trim();
-    if (!content || streaming) return;
+    if (!content || streaming || !signalsReady) return;
     setInput(""); setError(""); setStreamBuffer("");
     const top = signals.slice(0,40).map((s:any) => 
       `${s.symbol} (${s.name||s.symbol}): ${s.direction} | prob=${(s.probability*100).toFixed(1)}% | conf=${s.confidence} | EV=${s.expected_value?.toFixed(2)}x | kelly=${s.kelly_size?.toFixed(1)}% | price=$${s.current_price?.toFixed(2)} | tp=$${s.take_profit?.toFixed(2)} | sl=$${s.stop_loss?.toFixed(2)} | type=${s.type}`
