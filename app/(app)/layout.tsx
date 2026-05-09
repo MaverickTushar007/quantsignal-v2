@@ -12,13 +12,7 @@ const NAV = [
   { href: "/research",   label: "Research",    icon: "◑", desc: "Evidence intel" },
   { href: "/calendar",   label: "Calendar",    icon: "▦", desc: "Econ events" },
   { href: "/news",       label: "News",        icon: "◪", desc: "Market news feed" },
-  { href: "/xray",       label: "X-Ray",       icon: "◈", desc: "Portfolio scan" },
-  { href: "/guardian",   label: "Guardian",    icon: "⬡", desc: "Risk monitor" },
-  { href: "/documents",  label: "Documents",   icon: "◫", desc: "PDF & uploads" },
-  { href: "/agents",     label: "Agents",      icon: "◉", desc: "AI agents" },
-  { href: "/portfolio",  label: "Portfolio",   icon: "◱", desc: "Holdings" },
-  { href: "/journal",    label: "Journal",     icon: "◧", desc: "Trade log" },
-  { href: "/alerts",     label: "Alerts",      icon: "◬", desc: "Notifications" },
+
 ];
 
 const CAL_API = process.env.NEXT_PUBLIC_API_URL || "https://quantsignal-api.onrender.com/api/v1";
