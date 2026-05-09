@@ -1,4 +1,5 @@
 export default {
+  cloudflare: { dangerousDisableConfigValidation: true },
   edgeExternals: ["node:crypto"],
   default: {
     override: {
