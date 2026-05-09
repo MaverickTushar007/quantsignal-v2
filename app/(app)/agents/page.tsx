@@ -116,7 +116,7 @@ export default function AgentsPage() {
       {/* Messages */}
       <div style={{ flex: 1, overflow: "auto", padding: "24px 28px" }}>
         {isEmpty && !streaming ? (
-          <div style={{ maxWidth: 560, margin: "0 auto", paddingTop: 40 }}>
+          <div style={{ maxWidth: 900, margin: "0 auto", paddingTop: 40 }}>
             <div style={{ textAlign: "center", marginBottom: 40 }}>
               <div style={{ width: 48, height: 48, background: "var(--brand-dim)", border: "1px solid var(--brand-border)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 20 }}>◉</div>
               <div style={{ fontFamily: display, fontSize: 20, marginBottom: 8 }}>Ask Perseus anything</div>
@@ -137,7 +137,7 @@ export default function AgentsPage() {
             </div>
           </div>
         ) : (
-          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
             {messages.map((m, i) => (
               <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
                 <div style={{ width: 28, height: 28, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, fontFamily: mono,
@@ -182,7 +182,7 @@ export default function AgentsPage() {
 
       {/* Input */}
       <div style={{ padding: "16px 28px 20px", flexShrink: 0, borderTop: "1px solid var(--border-subtle)", background: "var(--bg-surface)" }}>
-        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", gap: 10, alignItems: "flex-end" }}>
           <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKey}
             placeholder="Ask Perseus about signals, regime, risk, or strategy…" rows={1}
             style={{ flex: 1, padding: "11px 14px", background: "var(--bg-elevated)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-md)", color: "var(--text-primary)", fontSize: 13, fontFamily: sans, outline: "none", resize: "none", lineHeight: 1.5, maxHeight: 120, overflowY: "auto" }} />
@@ -193,7 +193,7 @@ export default function AgentsPage() {
             fontSize: 12, fontWeight: 600, fontFamily: sans, cursor: input.trim() && !streaming ? "pointer" : "not-allowed", transition: "all 0.15s", flexShrink: 0,
           }}>{streaming ? "…" : "Send →"}</button>
         </div>
-        <div style={{ maxWidth: 720, margin: "8px auto 0", fontSize: 10, color: "var(--text-disabled)", textAlign: "center" }}>Enter to send · Shift+Enter for new line</div>
+        <div style={{ maxWidth: 1100, margin: "8px auto 0", fontSize: 10, color: "var(--text-disabled)", textAlign: "center" }}>Enter to send · Shift+Enter for new line</div>
       </div>
     </div>
   );
