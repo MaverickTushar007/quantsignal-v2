@@ -24,6 +24,11 @@ export default function CalendarPage() {
   const [infoText, setInfoText]     = useState("");
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoProgress, setInfoProgress] = useState(0);
+  const [signals, setSignals] = useState<any[]>([]);
+  useEffect(() => {
+    fetch("https://quantsignal-api.onrender.com/api/v1/signals")
+      .then(r => r.json()).then(d => setSignals(Array.isArray(d) ? d : [])).catch(() => {});
+  }, []);
   const [reminderEvent, setReminderEvent] = useState<any | null>(null);
   const [email, setEmail]           = useState("");
   const [reminderStatus, setReminderStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
@@ -144,13 +149,19 @@ export default function CalendarPage() {
     setInfoProgress(0);
     const progIv = setInterval(() => setInfoProgress(p => p < 85 ? p + Math.random() * 7 : p), 350);
     const assets = (event.affected_assets||[]).join(", ") || "major markets";
+    const assetSignals = signals.filter((s:any) => 
+      (event.affected_assets||[]).some((a:string) => s.symbol.includes(a) || a.includes(s.symbol))
+    ).slice(0,5).map((s:any) => 
+      `${s.symbol}: ${s.direction} $${s.current_price?.toFixed(2)} prob=${Math.round((s.probability||0)*100)}% TP=$${s.take_profit?.toFixed(2)} SL=$${s.stop_loss?.toFixed(2)}`
+    ).join(", ");
+    const signalCtx = assetSignals ? `\nLIVE SIGNAL DATA for affected assets: ${assetSignals}` : "";
     const prompt = [
       "You are a professional trading analyst. Analyze this economic event for trading implications.",
       "Event: " + event.title,
       "Forecast: " + (event.forecast ?? "N/A"),
       "Previous: " + (event.previous ?? "N/A"),
       "Actual: " + (event.actual ?? "Not released yet"),
-      "Affected assets: " + assets,
+      "Affected assets: " + assets + signalCtx,
       "",
       "Respond in this EXACT format:",
       "VERDICT: [one sentence - bullish/bearish/neutral impact and why]",
