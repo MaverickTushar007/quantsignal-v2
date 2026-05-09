@@ -1,5 +1,6 @@
 // @ts-nocheck
 export default {
+  edgeExternals: ["node:crypto"],
   default: {
     override: {
       wrapper: "cloudflare-node",
