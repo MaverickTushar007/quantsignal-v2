@@ -31,10 +31,10 @@ export function useAuth(): AuthState {
     try {
       const { data } = await supabase
         .from("profiles")
-        .select("plan")
+        .select("tier")
         .eq("id", u.id)
         .single();
-      setIsPro(data?.plan === "pro" || data?.plan === "institutional");
+      setIsPro(data?.tier === "pro" || data?.tier === "institutional");
     } catch {
       setIsPro(false); // table missing or error — default to free
     }
