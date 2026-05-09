@@ -438,7 +438,7 @@ export default function CalendarPage() {
               {/* Parsed analysis cards */}
               {!infoLoading && infoText && (()=>{
                 const get = (key:string) => {
-                  const after = infoText.split(key+":")[1];
+                  const after = infoText.split(key+":")[1] ?? infoText.split("## "+key+"\n")[1];
                   if (!after) return "";
                   const end = after.split("\n").findIndex((x,j) => j > 0 && x.length > 2 && x[0] >= "A" && x[0] <= "Z" && x.indexOf(":") > 0 && x.indexOf(":") < 12);
                   return (end === -1 ? after : after.split("\n").slice(0, end).join("\n")).trim();
