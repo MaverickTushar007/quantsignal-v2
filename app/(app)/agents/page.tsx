@@ -116,8 +116,7 @@ QUESTION: ${userContent}`;
     const sells = signals.filter(s => s.direction === "SELL").length;
     const sigJson = sorted.slice(0,50).map(s =>
       `{"sym":"${s.symbol}","dir":"${s.direction}","prob":${((s.probability||0)*100).toFixed(0)}%,"conf":"${s.confidence}","EV":${(s.expected_value||0).toFixed(2)},"kelly":${(s.kelly_size||0).toFixed(1)}%,"price":$${(s.current_price||0).toFixed(2)},"TP":$${(s.take_profit||0).toFixed(2)},"SL":$${(s.stop_loss||0).toFixed(2)}}`
-    ).join("
-");
+    ).join("\n");
 
     const dataInjection: PerseusMessage = {
       role: "user",
