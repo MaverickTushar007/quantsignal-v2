@@ -131,9 +131,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <span style={{ fontSize: 13, color: active ? "var(--brand)" : "var(--text-tertiary)", flexShrink: 0 }}>{item.icon}</span>
                 {!collapsed && (
                   <div>
-                    <div style={{ fontSize: 10, fontWeight: 700, color: active ? "var(--text-primary)" : "var(--text-secondary)", letterSpacing: "0.05em" }}>{item.label}</div>
-                    <div style={{ fontSize: 9, color: "var(--text-disabled)", marginTop: 1 }}>{item.desc}</div>
+                    <div className="qs-nav-label" style={{ fontSize: 10, fontWeight: 700, color: active ? "var(--text-primary)" : "var(--text-secondary)", letterSpacing: "0.05em" }}>{item.label}</div>
+                    <div className="qs-nav-desc" style={{ fontSize: 9, color: "var(--text-disabled)", marginTop: 1 }}>{item.desc}</div>
                   </div>
+                )}
+                {collapsed && (
+                  <div className="qs-nav-label-mobile" style={{ fontSize: 7, color: active ? "var(--brand)" : "var(--text-disabled)", letterSpacing: "0.04em", display: "none" }}>{item.label}</div>
                 )}
               </Link>
             );

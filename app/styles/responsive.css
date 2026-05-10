@@ -14,7 +14,7 @@
   /* Sidebar becomes bottom nav */
   .qs-sidebar {
     width: 100% !important;
-    height: 56px !important;
+    height: 60px !important;
     flex-direction: row !important;
     border-right: none !important;
     border-top: 1px solid var(--border-subtle) !important;
@@ -23,7 +23,7 @@
     left: 0 !important;
     right: 0 !important;
     z-index: 100 !important;
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
     overflow-y: hidden !important;
   }
 
@@ -35,38 +35,44 @@
 
   /* Nav becomes horizontal */
   .qs-sidebar nav {
+    display: flex !important;
     flex-direction: row !important;
     padding: 0 !important;
-    overflow-x: auto !important;
+    overflow-x: hidden !important;
     overflow-y: hidden !important;
     flex: 1 !important;
+    width: 100% !important;
   }
 
   .qs-sidebar nav a {
     flex-direction: column !important;
-    padding: 8px 14px !important;
-    gap: 3px !important;
+    padding: 6px 4px !important;
+    gap: 2px !important;
     justify-content: center !important;
     align-items: center !important;
     border-left: none !important;
-    border-bottom: 2px solid transparent !important;
-    flex-shrink: 0 !important;
-    min-width: 56px !important;
+    border-top: 2px solid transparent !important;
+    border-bottom: none !important;
+    flex: 1 !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
   }
 
   .qs-sidebar nav a[data-active="true"],
   .qs-sidebar nav a[style*="brand"] {
-    border-bottom-color: var(--brand) !important;
+    border-top-color: var(--brand) !important;
     border-left: none !important;
   }
 
-  /* Nav label on mobile — show only icon */
+  /* Nav label on mobile — show only icon + tiny label */
   .qs-nav-desc { display: none !important; }
-  .qs-nav-label { font-size: 8px !important; margin-top: 1px !important; }
+  .qs-nav-label { font-size: 7px !important; margin-top: 1px !important; letter-spacing: 0.04em !important; }
+  /* Hide the description div inside nav links */
+  .qs-sidebar nav a > div > div:nth-child(2) { display: none !important; }
 
   /* Main content area gets bottom padding so content isn't behind bottom nav */
   .qs-main {
-    padding-bottom: 64px !important;
+    padding-bottom: 68px !important;
   }
 
   /* Pages */
@@ -220,4 +226,33 @@
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to   { transform: translateY(0); }
+}
+
+/* Show mobile nav labels */
+@media (max-width: 768px) {
+  .qs-nav-label-mobile { display: block !important; }
+  .qs-sidebar nav a > span:first-child { font-size: 16px !important; }
+}
+
+/* ── News page mobile fix ── */
+@media (max-width: 768px) {
+  .qs-news-shell {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .qs-news-analysis-panel {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(255,255,255,0.07) !important;
+    position: static !important;
+    height: auto !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+  }
+  /* When panel is closed (width:0), hide completely */
+  .qs-news-analysis-panel[style*="width: 0"] {
+    display: none !important;
+  }
 }
