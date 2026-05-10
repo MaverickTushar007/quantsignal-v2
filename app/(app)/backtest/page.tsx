@@ -69,7 +69,7 @@ export default function BacktestPage() {
       </div>
 
       {/* Validated */}
-      <div style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", overflow: "hidden", marginBottom: 24 }}>
+      <div className="qs-backtest-table" style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", overflow: "hidden", marginBottom: 24 }}>
         <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00ff88", boxShadow: "0 0 6px #00ff88" }} />
           <span style={{ fontFamily: mono, fontSize: 9, color: "var(--text-disabled)", letterSpacing: "0.12em" }}>VALIDATED SIGNAL UNIVERSE</span>

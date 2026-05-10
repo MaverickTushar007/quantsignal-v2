@@ -40,7 +40,7 @@ export default function AlertsPage() {
       <div style={{ fontFamily: display, fontSize: 24, fontWeight: 400, marginBottom: 24 }}>Signal Performance</div>
 
       {/* Performance metrics */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
+      <div className="qs-metric-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
         <MetricBox label="TOTAL SIGNALS" value={loading ? "—" : perf?.total ?? 0} />
         <MetricBox label="WIN RATE" value={loading ? "—" : perf?.win_rate != null ? `${(perf.win_rate * 100).toFixed(1)}%` : "—"} color="#00ff88" />
         <MetricBox label="AVG P&L" value={loading ? "—" : perf?.avg_pnl != null ? `${perf.avg_pnl > 0 ? "+" : ""}${perf.avg_pnl.toFixed(2)}%` : "—"} color={perf?.avg_pnl > 0 ? "#00ff88" : perf?.avg_pnl < 0 ? "#ff4d6d" : "var(--text-primary)"} />

@@ -113,7 +113,7 @@ QUESTION: ` : "";
   const isEmpty = messages.length === 0;
 
   return (
-    <div style={{ display: "flex", height: "100%", fontFamily: sans, color: "var(--text-primary)", background: "var(--bg-base)", overflow: "hidden" }}>
+    <div className="qs-agents-shell" style={{ display: "flex", height: "100%", fontFamily: sans, color: "var(--text-primary)", background: "var(--bg-base)", overflow: "hidden" }}>
       <style>{`
         .perseus-prose{font-size:13px;line-height:1.75;color:var(--text-secondary)}
         .perseus-prose h1,.perseus-prose h2,.perseus-prose h3{font-family:var(--font-display);font-weight:400;color:var(--text-primary);margin:14px 0 6px}
@@ -131,7 +131,7 @@ QUESTION: ` : "";
       `}</style>
 
       {/* LEFT PANEL */}
-      <div style={{ width: 210, flexShrink: 0, borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", background: "var(--bg-surface)", overflow: "hidden" }}>
+      <div className="qs-agents-left-panel" style={{ width: 210, flexShrink: 0, borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", background: "var(--bg-surface)", overflow: "hidden" }}>
 
         {/* Perseus header */}
         <div style={{ padding: "14px 12px 10px", borderBottom: "1px solid var(--border-subtle)" }}>

@@ -77,10 +77,10 @@ export default function AuthPage() {
   const mono    = "var(--font-mono)";
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", fontFamily: sans, color: "var(--text-primary)", overflow: "hidden" }}>
+    <div className="qs-auth-shell" style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", fontFamily: sans, color: "var(--text-primary)", overflow: "hidden" }}>
 
       {/* ── LEFT — Product story ── */}
-      <div style={{ flex: "0 0 54%", borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", padding: "44px 52px", position: "relative", overflow: "hidden" }}>
+      <div className="qs-auth-left" style={{ flex: "0 0 54%", borderRight: "1px solid var(--border-subtle)", display: "flex", flexDirection: "column", padding: "44px 52px", position: "relative", overflow: "hidden" }}>
 
         {/* Ambient glow */}
         <div style={{ position: "absolute", top: -140, left: -100, width: 560, height: 560, background: "radial-gradient(circle, rgba(0,255,136,0.05) 0%, transparent 65%)", pointerEvents: "none" }} />
@@ -156,7 +156,7 @@ export default function AuthPage() {
           </div>
 
           {/* Stats row */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginTop: 28, paddingTop: 24, borderTop: "1px solid var(--border-subtle)" }}>
+          <div className="qs-auth-stats" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8, marginTop: 28, paddingTop: 24, borderTop: "1px solid var(--border-subtle)" }}>
             {STATS.map(s => (
               <div key={s.label}>
                 <div style={{ fontFamily: mono, fontSize: 16, fontWeight: 700, color: "var(--brand)", marginBottom: 3 }}>{s.value}</div>
@@ -168,7 +168,7 @@ export default function AuthPage() {
       </div>
 
       {/* ── RIGHT — Auth form ── */}
-      <div style={{ flex: "0 0 46%", display: "flex", alignItems: "center", justifyContent: "center", padding: "44px 52px", background: "var(--bg-surface)" }}>
+      <div className="qs-auth-right" style={{ flex: "0 0 46%", display: "flex", alignItems: "center", justifyContent: "center", padding: "44px 52px", background: "var(--bg-surface)" }}>
         <div style={{ width: "100%", maxWidth: 340 }}>
 
           {/* Heading */}

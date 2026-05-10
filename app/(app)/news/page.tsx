@@ -199,7 +199,7 @@ REASONING: [2-3 sentences of deeper context a trader needs to know]`;
       )}
 
       {/* Main content — split when panel open */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative" }}>
+      <div className="qs-news-shell" style={{ display: "flex", flex: 1, overflow: "hidden", position: "relative" }}>
 
         {/* Article list */}
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 24px", transition: "all 0.35s cubic-bezier(0.4,0,0.2,1)" }}>
@@ -265,7 +265,7 @@ REASONING: [2-3 sentences of deeper context a trader needs to know]`;
         </div>
 
         {/* Analysis panel — slides in from right */}
-        <div ref={panelRef} style={{
+        <div ref={panelRef} className="qs-news-analysis-panel" style={{
           width: activeArticle ? 400 : 0,
           minWidth: activeArticle ? 400 : 0,
           overflow: "hidden",

@@ -77,10 +77,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const currentPage = NAV.find(n => pathname === n.href || pathname.startsWith(n.href + "/"));
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "var(--bg-base)", fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
+    <div className="qs-shell" style={{ display: "flex", height: "100vh", overflow: "hidden", background: "var(--bg-base)", fontFamily: "var(--font-mono)", color: "var(--text-primary)" }}>
 
       {/* ── Sidebar ── */}
-      <aside style={{
+      <aside className="qs-sidebar" style={{
         width: collapsed ? "var(--sidebar-collapsed)" : "var(--sidebar-width)",
         flexShrink: 0,
         background: "var(--bg-surface)",
@@ -92,7 +92,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       }}>
 
         {/* Logo row */}
-        <div style={{ padding: collapsed ? "14px 0" : "14px var(--space-4)", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "space-between", flexShrink: 0 }}>
+        <div style={{ padding: collapsed ? "14px 0" : "14px var(--space-4)", borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "space-between", flexShrink: 0 }} className="qs-sidebar-header">
           {!collapsed && (
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <div style={{ width: 22, height: 22, background: "var(--brand)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 900, color: "#000", flexShrink: 0 }}>Q</div>
@@ -106,7 +106,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Plan badge */}
         {!collapsed && (
-          <div style={{ padding: "8px var(--space-4)", borderBottom: "1px solid var(--border-subtle)" }}>
+          <div className="qs-plan-badge" style={{ padding: "8px var(--space-4)", borderBottom: "1px solid var(--border-subtle)" }}>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: isPro ? "var(--accent-gold-dim)" : "rgba(255,255,255,0.03)", border: isPro ? "1px solid rgba(255,215,0,0.25)" : "1px solid var(--border-subtle)", borderRadius: "var(--radius-sm)", padding: "3px 8px" }}>
               <div style={{ width: 4, height: 4, borderRadius: "50%", background: isPro ? "var(--accent-gold)" : "var(--text-disabled)" }} />
               <span style={{ fontSize: 9, fontWeight: 700, color: isPro ? "var(--accent-gold)" : "var(--text-tertiary)", letterSpacing: "0.12em" }}>{isPro ? "PRO" : "FREE"}</span>
@@ -141,7 +141,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* User footer */}
-        <div style={{ padding: collapsed ? "10px 0" : "10px var(--space-4)", borderTop: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 8, justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0 }}>
+        <div style={{ padding: collapsed ? "10px 0" : "10px var(--space-4)", borderTop: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", gap: 8, justifyContent: collapsed ? "center" : "flex-start", flexShrink: 0 }} className="qs-sidebar-footer">
           <div style={{ width: 24, height: 24, borderRadius: "50%", background: "var(--brand-dim)", border: "1px solid var(--brand-border)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: "var(--brand)", flexShrink: 0 }}>
             {user.email?.[0]?.toUpperCase() ?? "U"}
           </div>
@@ -159,10 +159,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* ── Main ── */}
-      <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div className="qs-main" style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
 
         {/* Top bar */}
-        <div style={{ height: "var(--topbar-height)", flexShrink: 0, borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-5)", background: "var(--bg-surface)" }}>
+        <div className="qs-topbar" style={{ height: "var(--topbar-height)", flexShrink: 0, borderBottom: "1px solid var(--border-subtle)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-5)", background: "var(--bg-surface)" }}>
           <CommandMenu />
           <span style={{ fontSize: 10, color: "var(--text-tertiary)", letterSpacing: "0.12em" }}>
             {currentPage?.label?.toUpperCase() ?? "QUANTSIGNAL"}

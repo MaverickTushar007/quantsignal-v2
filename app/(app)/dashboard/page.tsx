@@ -102,7 +102,7 @@ function SignalDrawer({ s, onClose, userEmail }: { s: Signal | null; onClose: ()
       />
 
       {/* Drawer panel */}
-      <div style={{
+      <div className="qs-drawer" style={{
         position: "fixed", top: 0, right: 0, bottom: 0, width: 420,
         background: "var(--bg-base)", borderLeft: `1px solid ${dirColor}33`,
         zIndex: 999, overflowY: "auto", display: "flex", flexDirection: "column",
@@ -580,7 +580,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: narrative ? 10 : 0 }}>
+            <div className="qs-regime-strip" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, marginBottom: narrative ? 10 : 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
                 <div>
                   <div style={{ fontSize: 9, color: "var(--text-disabled)", letterSpacing: "0.12em", fontFamily: mono, marginBottom: 4 }}>MARKET REGIME</div>
@@ -625,7 +625,7 @@ export default function DashboardPage() {
 
       {/* ── LAYER 2: Top conviction ── */}
       {!loading && (topBuy || topSell) && (
-        <div style={{ display: "grid", gridTemplateColumns: topBuy && topSell ? "1fr 1fr" : "1fr", gap: 12, marginBottom: 14 }}>
+        <div className="qs-top-conviction" style={{ display: "grid", gridTemplateColumns: topBuy && topSell ? "1fr 1fr" : "1fr", gap: 12, marginBottom: 14 }}>
           {topBuy && (
             <div
               onClick={() => openDrawer(topBuy)}
@@ -728,7 +728,7 @@ export default function DashboardPage() {
 
       {/* ── Grid (grouped or flat) ── */}
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
+        <div className="qs-signal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
           {Array.from({ length: 12 }).map((_,i) => (
             <div key={i} style={{ background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", borderRadius: "var(--radius-lg)", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -763,7 +763,7 @@ export default function DashboardPage() {
                 <div style={{ flex: 1, height: 1, background: "var(--border-subtle)" }} />
                 <span style={{ fontFamily: mono, fontSize: 9, color: "var(--text-disabled)" }}>{groupSigs.length}</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
+              <div className="qs-signal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
                 {groupSigs.map((s, i) => (
                   <SignalCard
                     key={s.symbol} s={s}
@@ -776,7 +776,7 @@ export default function DashboardPage() {
           ))}
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
+        <div className="qs-signal-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10 }}>
           {filtered.map(s => <SignalCard key={s.symbol} s={s} onClick={openDrawer} />)}
         </div>
       )}
